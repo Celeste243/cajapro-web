@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const connectDB = require('./config/db');
 require('dotenv').config();
 
@@ -9,6 +10,9 @@ const { errorHandler } = require('./middlewares/error.middleware');
 
 const app = express();
 app.use(express.json());
+
+// Sirve el front (HTML/CSS/JS de la carpeta public)
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Conexión a Base de Datos
 connectDB();

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CajaPro - Productos</title><link rel="stylesheet" href="style.css"></head>
+<body><header id="nav"></header><main>
+<section id="formBox" class="hidden"><h2>Nuevo producto</h2>
+  <div class="row"><input id="codigo" placeholder="Código de barras"><input id="nombre" placeholder="Nombre"></div>
+  <div class="row"><input id="precio" type="number" min="0" step="0.01" placeholder="Precio"><input id="stock" type="number" min="0" placeholder="Stock"></div>
+  <button onclick="crear()">Guardar producto</button>
+</section>
+<section><h2>Productos activos</h2>
+  <table><thead><tr><th>Código</th><th>Nombre</th><th>Precio</th><th>Stock</th><th id="thAcc"></th></tr></thead><tbody id="lista"></tbody></table>
+  <div id="m"></div>
+</section></main>
+<script src="app.js"></script>
+<script>
+initPage();
+const admin = getUser()?.rol === 'Administrador';
+if (admin) { formBox.classList.remove('hidden'); thAcc.textContent = 'Acciones'; }
+let productos = [];
+async function cargar() {
+  try {
+    productos = await api('/products');
+    lista.innerHTML = productos.length ? productos.map(p => `<tr><td>${esc(p.codigoBarra)}</td><td>${esc(p.nombre)}</td><td>${money(p.precio)}</td><td>${p.stock}</td>
+      <td>${admin ? `<button class="sec" onclick="editar('${p._id}')">Editar</button> <button class="del" onclick="borrar('${p._id}')">Deshabilitar</button>` : ''}</td></tr>`).join('')
+      : '<tr><td colspan="5">Todavía no hay productos. Cargá el primero.</td></tr>';
+  } catch (e) { msg('m', e.message, false); }
+}
+async function crear() {
+  try {
+    await api('/products', 'POST', { codigoBarra: codigo.value.trim(), nombre: nombre.value.trim(), precio: Number(precio.value), stock: Number(stock.value) });
+    codigo.value = nombre.value = precio.value = stock.value = '';
+    msg('m', 'Producto guardado', true); cargar();
+  } catch (e) { msg('m', 'No se pudo guardar. Revisá que estén todos los campos y que el código no esté repetido.', false); }
+}
+async function editar(id) {
+  const p = productos.find(x => x._id === id);
+  const precioNuevo = prompt('Precio de ' + p.nombre, p.precio); if (precioNuevo === null) return;
+  const stockNuevo = prompt('Stock de ' + p.nombre, p.stock); if (stockNuevo === null) return;
+  try { await api('/products/' + id, 'PUT', { precio: Number(precioNuevo), stock: Number(stockNuevo) }); msg('m', 'Producto actualizado', true); cargar(); }
+  catch (e) { msg('m', e.message, false); }
+}
+async function borrar(id) {
+  if (!confirm('¿Deshabilitar este producto? No se borra, queda fuera del listado.')) return;
+  try { const d = await api('/products/' + id, 'DELETE'); msg('m', d.message, true); cargar(); }
+  catch (e) { msg('m', e.message, false); }
+}
+cargar();
+</script></body></html>

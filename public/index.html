@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CajaPro - Ingresar</title><link rel="stylesheet" href="style.css"></head>
+<body><main style="max-width:420px">
+<section id="loginBox"><h1>Ingresar a CajaPro</h1>
+  <div class="row"><input id="lEmail" type="email" placeholder="Email"></div>
+  <div class="row"><input id="lPass" type="password" placeholder="Contraseña"></div>
+  <button onclick="login()">Ingresar</button>
+  <button class="sec" onclick="toggle()">Crear cuenta</button>
+</section>
+<section id="regBox" class="hidden"><h1>Crear cuenta</h1>
+  <div class="row"><input id="rNombre" placeholder="Nombre"></div>
+  <div class="row"><input id="rEmail" type="email" placeholder="Email"></div>
+  <div class="row"><input id="rPass" type="password" placeholder="Contraseña"></div>
+  <div class="row"><select id="rRol"><option>Cajero</option><option>Administrador</option></select></div>
+  <button onclick="register()">Registrarme</button>
+  <button class="sec" onclick="toggle()">Volver a ingresar</button>
+</section>
+<div id="m"></div>
+</main>
+<script src="app.js"></script>
+<script>
+if (getToken()) location.href = '/productos.html';
+function toggle() { loginBox.classList.toggle('hidden'); regBox.classList.toggle('hidden'); m.className = ''; m.textContent = ''; }
+async function login() {
+  try {
+    const d = await api('/auth/login', 'POST', { email: lEmail.value.trim(), password: lPass.value });
+    localStorage.setItem('token', d.token);
+    localStorage.setItem('user', JSON.stringify(d.user));
+    location.href = '/productos.html';
+  } catch (e) { msg('m', e.message, false); }
+}
+async function register() {
+  try {
+    const d = await api('/auth/register', 'POST', { nombre: rNombre.value.trim(), email: rEmail.value.trim(), password: rPass.value, rol: rRol.value });
+    toggle(); msg('m', d.message + '. Ya podés ingresar.', true);
+  } catch (e) { msg('m', 'No se pudo registrar. Revisá los datos (el email no puede estar repetido).', false); }
+}
+</script></body></html>

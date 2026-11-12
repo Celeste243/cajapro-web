@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CajaPro - Nueva venta</title><link rel="stylesheet" href="style.css"></head>
+<body><header id="nav"></header><main>
+<section><h2>Agregar producto</h2>
+  <div class="row"><input id="codigo" placeholder="Código de barras" onkeydown="if(event.key==='Enter')agregar()"><input id="cant" type="number" min="1" value="1" style="max-width:100px"><button onclick="agregar()">Agregar</button></div>
+  <div id="m"></div>
+</section>
+<section class="ticket"><h2>Ticket</h2>
+  <table><thead><tr><th>Producto</th><th>Cant.</th><th>Subtotal</th><th></th></tr></thead><tbody id="carrito"></tbody></table>
+  <div class="total">Total: <span id="total">$0,00</span></div>
+  <button onclick="cobrar()">Cobrar venta</button>
+</section></main>
+<script src="app.js"></script>
+<script>
+initPage();
+let productos = [], items = [];
+async function cargar() { try { productos = await api('/products'); } catch (e) { msg('m', e.message, false); } }
+function agregar() {
+  const cod = codigo.value.trim(), c = Number(cant.value);
+  const p = productos.find(x => x.codigoBarra === cod);
+  if (!p) return msg('m', 'El código ' + cod + ' no existe o el producto está deshabilitado.', false);
+  if (!Number.isInteger(c) || c < 1) return msg('m', 'La cantidad tiene que ser un entero mayor a 0.', false);
+  const ya = items.find(i => i.p._id === p._id);
+  const nueva = (ya ? ya.c : 0) + c;
+  if (nueva > p.stock) return msg('m', 'Stock insuficiente para ' + p.nombre + ' (disponible: ' + p.stock + ').', false);
+  if (ya) ya.c = nueva; else items.push({ p, c });
+  codigo.value = ''; cant.value = 1; m.className = ''; m.textContent = ''; dibujar(); codigo.focus();
+}
+function quitar(i) { items.splice(i, 1); dibujar(); }
+function dibujar() {
+  carrito.innerHTML = items.length ? items.map((i, n) => `<tr><td>${esc(i.p.nombre)}</td><td>${i.c}</td><td>${money(i.p.precio * i.c)}</td><td><button class="del" onclick="quitar(${n})">Quitar</button></td></tr>`).join('')
+    : '<tr><td colspan="4">Escaneá o escribí un código para empezar la venta.</td></tr>';
+  total.textContent = money(items.reduce((s, i) => s + i.p.precio * i.c, 0));
+}
+async function cobrar() {
+  if (!items.length) return msg('m', 'Agregá al menos un producto antes de cobrar.', false);
+  try {
+    const v = await api('/sales', 'POST', { productos: items.map(i => ({ id_producto: i.p._id, cantidad: i.c })) });
+    msg('m', 'Venta cobrada: ' + money(v.total_venta) + ' (' + new Date(v.fecha).toLocaleString('es-AR') + ')', true);
+    items = []; dibujar(); cargar();
+  } catch (e) { msg('m', e.message, false); }
+}
+dibujar(); cargar();
+</script></body></html>
