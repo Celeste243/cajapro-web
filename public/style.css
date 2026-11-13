@@ -1,0 +1,231 @@
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    linear-gradient(rgba(10, 20, 40, 0.65), rgba(10, 20, 40, 0.65)),
+    url('/img/caja.jpg') center / cover no-repeat fixed;
+  font-family: Arial, sans-serif;
+  color: #fff;
+}
+
+form, table {
+  background: rgba(255, 255, 255, 0.95);
+  color: #222;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+body {
+  padding: 20px 40px;
+  box-sizing: border-box;
+}
+
+a {
+  color: #fff;
+  text-decoration: none;
+  margin-right: 20px;
+  font-weight: bold;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+h1, h2 {
+  margin: 20px 0 12px;
+}
+
+input {
+  padding: 10px;
+  margin: 4px 6px 4px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+button {
+  padding: 8px 16px;
+  margin: 4px 4px 4px 0;
+  border: none;
+  border-radius: 6px;
+  background: #2f6fed;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+button:hover {
+  background: #1f55c2;
+}
+
+th, td {
+  padding: 10px 14px;
+  text-align: left;
+}
+nav, header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 14px;
+  padding: 12px 20px;
+  margin-bottom: 24px;
+}
+
+nav a, header a {
+  padding: 8px 14px;
+  border-radius: 8px;
+}
+
+nav a:hover, header a:hover {
+  background: rgba(255, 255, 255, 0.2);
+  text-decoration: none;
+}
+
+form, table {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(6px);
+}
+
+button {
+  background: linear-gradient(135deg, #2f6fed, #7b3fe4);
+  font-weight: bold;
+}
+
+button:hover {
+  filter: brightness(1.15);
+  background: linear-gradient(135deg, #2f6fed, #7b3fe4);
+}
+
+h1, h2 {
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+/* Utilidades que usa tu HTML */
+.hidden { display: none !important; }
+.row { margin-bottom: 12px; }
+
+main { margin: 0 auto; }
+
+/* Panel de vidrio para login y registro */
+#loginBox, #regBox {
+  margin-top: 10vh;
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 18px;
+  padding: 32px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+}
+
+#loginBox h1, #regBox h1 {
+  text-align: center;
+  margin-top: 0;
+}
+
+/* Campos a lo ancho (incluye el selector de rol) */
+.row input, .row select {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+/* Botones del login: principal ancho y secundario con borde */
+#loginBox button, #regBox button {
+  width: 100%;
+  margin: 8px 0 0;
+  padding: 12px;
+  font-size: 16px;
+}
+
+button.sec {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+button.sec:hover {
+  background: rgba(255, 255, 255, 0.2);
+  filter: none;
+}
+
+/* Mensajes de error o éxito (solo se ve cuando tiene texto) */
+#m:not(:empty) {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #222;
+  text-align: center;
+}
+/* Panel de "Agregar producto" */
+section:has(#cant) {
+  background: rgba(255, 255, 255, 0.92);
+  color: #222;
+  border-radius: 14px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+section:has(#cant) h2 { color: #222; text-shadow: none; margin-top: 0; }
+section:has(#cant) input { border: 1px solid #cfd6e4; }
+section:has(#cant) .row { align-items: center; margin-bottom: 0; }
+section:has(#cant) .row button { white-space: nowrap; }
+
+/* Ticket: un solo panel (la tabla de adentro queda sin recuadro propio) */
+.ticket {
+  background: rgba(255, 255, 255, 0.95);
+  color: #222;
+  border-radius: 14px;
+  padding: 20px 24px 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+.ticket h2 { color: #222; text-shadow: none; margin-top: 0; }
+.ticket table {
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  border-radius: 0;
+}
+
+/* Total gigante, como en una caja de verdad */
+.total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 16px 0;
+  padding: 14px 20px;
+  background: #eafaf1;
+  border: 2px solid #b8ebd0;
+  border-radius: 12px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #2f3a56;
+}
+.total span {
+  font-size: 52px;
+  font-weight: 800;
+  color: #1a9d55;
+}
+
+/* Botón principal: Cobrar venta */
+.ticket > button {
+  width: 100%;
+  padding: 18px;
+  font-size: 22px;
+  letter-spacing: 0.5px;
+  background: linear-gradient(135deg, #22b866, #148a4c);
+  box-shadow: 0 6px 16px rgba(26, 157, 85, 0.45);
+}
+.ticket > button:hover {
+  background: linear-gradient(135deg, #22b866, #148a4c);
+  filter: brightness(1.1);
+}

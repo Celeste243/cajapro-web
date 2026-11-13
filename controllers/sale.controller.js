@@ -32,3 +32,29 @@ exports.createSale = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.getResumen = async (req, res, next) => {
+  try {
+    const ventas = await Sale.find().sort({ _id: -1 });
+
+    const inicioDelDia = new Date();
+    inicioDelDia.setHours(0, 0, 0, 0);
+
+    const deHoy = ventas.filter(v => v.fecha >= inicioDelDia);
+    const totalHoy = deHoy.reduce((suma, v) => suma + v.total_venta, 0);
+
+    res.json({
+      totalHoy,
+      cantidadHoy: deHoy.length,
+      promedioHoy: deHoy.length ? totalHoy / deHoy.length : 0,
+      ultimas: ventas.slice(0, 10).map(v => ({
+        id: v._id,
+        fecha: v.fecha,
+        total: v.total_venta,
+        items: v.productos.reduce((s, p) => s + p.cantidad, 0)
+      }))
+    });
+  } catch (error) {
+    next(error);
+  }
+};
